@@ -2,6 +2,7 @@ import os
 import cv2
 import numpy as np
 import onnxruntime
+onnxruntime.set_default_logger_severity(3)
 import time
 from utils.align_face import dealign, align_img
 from utils.prepare_data import LandmarkModel
@@ -15,7 +16,7 @@ cv2.setWindowProperty('out',cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
 
 def video_test():
     landmarkModel = LandmarkModel(name='landmarks')
-    landmarkModel.prepare(ctx_id= 0, det_thresh=0.1, det_size=(320,320))
+    landmarkModel.prepare(ctx_id= 0, det_thresh=0.1, det_size=(128,128))
 
     inf_sessions = []
 

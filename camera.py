@@ -39,9 +39,9 @@ class Camera:
         elif self.library == 'picamera':
             try:
                 frame = self.picam2.capture_array()
-                frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+                frame = cv2.rotate(frame, cv2.ROTATE_90_COUNTERCLOCKWISE)
                 frame = cv2.resize(frame, (self.width, self.height))
-                frame = cv2.flip(frame, 1)
+                frame = cv2.flip(frame, 2)
                 return frame
             except Exception as e:
                 print(e)
