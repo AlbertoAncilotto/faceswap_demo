@@ -5,9 +5,13 @@ import onnxruntime
 import time
 from utils.align_face import dealign, align_img
 from utils.prepare_data import LandmarkModel
+from camera import Camera
 
 base_dir = 'demo_images'
 MODEL_TIME = 5
+
+cv2.namedWindow('out', cv2.WND_PROP_FULLSCREEN)
+cv2.setWindowProperty('out',cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
 
 def video_test():
     landmarkModel = LandmarkModel(name='landmarks')
@@ -24,12 +28,14 @@ def video_test():
         inf_sessions.append({'session':ort_session, 'img':ref_img})
         print('loaded', model)
 
-    cap = cv2.VideoCapture(0)  # Use camera index 0 for the default webcam
+    # cap = cv2.VideoCapture(0)  # Use camera index 0 for the default webcam
+    cap = Camera(width=480, height=320, unzoom=2)
     start = time.time()
     curr_model = 0
     ort_session = inf_sessions[curr_model]['session']
     while True:
-        ret, frame = cap.read()
+        # ret, frame = cap.read()
+        frame = cap.get_frame()
         landmark = landmarkModel.get(frame)
         if landmark is not None:
             att_img, back_matrix = align_img(frame, landmark)
@@ -46,7 +52,7 @@ def video_test():
         h, w = resized_img.shape[:2]
         frame[:h, -w:, :] = resized_img
 
-        cv2.imshow("Webcam", frame)
+        cv2.imshow("out", frame)
         cv2.waitKey(1)
         if time.time() - start > MODEL_TIME:
             curr_model+=1

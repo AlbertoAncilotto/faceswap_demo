@@ -7,7 +7,7 @@ except:
     print('Picamera2 not available')
 
 class Camera:
-    def __init__(self, width=640, height=480, unzoom=1):
+    def __init__(self, width, height, unzoom=2):
         self.width = width
         self.height = height
         self.library = auto_library

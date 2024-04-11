@@ -6,7 +6,8 @@ import onnxruntime
 from utils.align_face import dealign, align_img
 from utils.prepare_data import LandmarkModel
 
-
+cv2.namedWindow('out', cv2.WND_PROP_FULLSCREEN)
+cv2.setWindowProperty('out',cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
 
 def video_test():
     landmarkModel = LandmarkModel(name='landmarks')
@@ -14,8 +15,7 @@ def video_test():
 
     ort_session = onnxruntime.InferenceSession("demo_images/nc.jpg.onnx", providers=['CPUExecutionProvider'])
 
-    cap = cv2.VideoCapture(0)  # Use camera index 0 for the default webcam
-    cap = Camera()
+    cap = Camera(width=480, height=320, unzoom=2)
     while True:
         frame = cap.get_frame()
         landmark = landmarkModel.get(frame)
@@ -30,7 +30,7 @@ def video_test():
             frame = res
         else:
             print('**** No Face Detect Error ****')
-        cv2.imshow("Webcam", frame)
+        cv2.imshow("out", frame)
         cv2.waitKey(1)
 
 
