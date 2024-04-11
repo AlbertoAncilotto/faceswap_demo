@@ -1,5 +1,6 @@
 import argparse
 import cv2
+from camera import Camera
 import numpy as np
 import onnxruntime
 from utils.align_face import dealign, align_img
@@ -7,15 +8,16 @@ from utils.prepare_data import LandmarkModel
 
 
 
-def video_test(args):
+def video_test():
     landmarkModel = LandmarkModel(name='landmarks')
     landmarkModel.prepare(ctx_id= 0, det_thresh=0.1, det_size=(320,320))
 
-    ort_session = onnxruntime.InferenceSession("model_static_sim.onnx", providers=['CPUExecutionProvider'])
+    ort_session = onnxruntime.InferenceSession("demo_images/nc.jpg.onnx", providers=['CPUExecutionProvider'])
 
     cap = cv2.VideoCapture(0)  # Use camera index 0 for the default webcam
+    cap = Camera()
     while True:
-        ret, frame = cap.read()
+        frame = cap.get_frame()
         landmark = landmarkModel.get(frame)
         if landmark is not None:
             att_img, back_matrix = align_img(frame, landmark)
@@ -34,14 +36,4 @@ def video_test(args):
 
 
 if __name__ == '__main__':
-
-    parser = argparse.ArgumentParser(description="MobileFaceSwap Test")
-
-    parser = argparse.ArgumentParser(description="MobileFaceSwap Test")
-    parser.add_argument('--source_img_path', default='nicholas-cage.jpg', type=str, help='path to the source image')
-    parser.add_argument('--image_size', type=int, default=256,help='size of the test images (224 SimSwap | 256 FaceShifter)')
-    parser.add_argument('--merge_result', type=bool, default=True, help='output with whole image')
-    parser.add_argument('--use_gpu', type=bool, default=False)
-
-    args = parser.parse_args()
-    video_test(args)
+    video_test()
